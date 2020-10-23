@@ -35,6 +35,9 @@ describe(`Articles service object`, () => {
   // remove the data from table from previous test
   before(() => db('blogful_articles').truncate());
 
+  // To avoid "Test Leak" - Every test should clean up after itself.
+  afterEach(() => db('blogful_articles').truncate());
+
   // closes database connection after tests are done so you don't have to  Ctrl+C in terminal to kill it 
   after(() => db.destroy());
 
@@ -49,6 +52,15 @@ describe(`Articles service object`, () => {
       return ArticlesService.getAllArticles(db)
         .then(actual => {
           expect(actual).to.eql(testArticles)
+        });
+    });
+  });
+
+  context(`Given 'blogful_articles' has no data`, () => {
+    it(`getAlllArticles() resolves an empty array`, () => {
+      return ArticlesService.getAllArticles(db)
+        .then(actual => {
+          expect(actual).to.eql([])
         });
     });
   });
