@@ -35,17 +35,16 @@ describe(`Articles service object`, () => {
   // remove the data from table from previous test
   before(() => db('blogful_articles').truncate());
 
-  before(() => {
-    return db
-      .into('blogful_articles')
-      .insert(testArticles)
-  });
-
   // closes database connection after tests are done so you don't have to  Ctrl+C in terminal to kill it 
   after(() => db.destroy());
 
-  describe(`getAllArticles()`, () => {
-    it(`resolves all articles from 'blogful_articles' table`, () => {
+  context(`Given 'blogful_articles' has data`, () => {
+    before(() => {
+      return db
+        .into('blogful_articles')
+        .insert(testArticles)
+    });
+    it(`getAllArticles() resolves all articles from 'blogful_articles' table`, () => {
       // test that ArticlesService.getAllArticles gets data from table
       return ArticlesService.getAllArticles(db)
         .then(actual => {
