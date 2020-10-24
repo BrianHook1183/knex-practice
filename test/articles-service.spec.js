@@ -32,29 +32,13 @@ describe(`Articles service object`, () => {
     });
   });
 
-  // remove the data from table from previous test
-  before(() => db('blogful_articles').truncate());
-
-  // To avoid "Test Leak" - Every test should clean up after itself.
-  afterEach(() => db('blogful_articles').truncate());
+  // Before all tests run and after each individual test, empty the
+  // blogful_articles table
+  before('clean db', () => db('blogful_articles').truncate());
+  afterEach('clean db', () => db('blogful_articles').truncate());
 
   // closes database connection after tests are done so you don't have to  Ctrl+C in terminal to kill it 
-  after(() => db.destroy());
-
-  context(`Given 'blogful_articles' has data`, () => {
-    before(() => {
-      return db
-        .into('blogful_articles')
-        .insert(testArticles)
-    });
-    it(`getAllArticles() resolves all articles from 'blogful_articles' table`, () => {
-      // test that ArticlesService.getAllArticles gets data from table
-      return ArticlesService.getAllArticles(db)
-        .then(actual => {
-          expect(actual).to.eql(testArticles)
-        });
-    });
-  });
+  after('destroy db connection', () => db.destroy());
 
   context(`Given 'blogful_articles' has no data`, () => {
     it(`getAlllArticles() resolves an empty array`, () => {
@@ -63,7 +47,8 @@ describe(`Articles service object`, () => {
           expect(actual).to.eql([])
         });
     });
-    it(`insertArticle() inserts a new article and resolves the new article with an 'id'`, () => {
+
+    it(`insertArticle() inserts a new article and resolves the new article with an 'id`, () => {
       const newArticle = {
         title: 'Test new title',
         content: 'Test new content',
@@ -76,9 +61,40 @@ describe(`Articles service object`, () => {
             title: newArticle.title,
             content: newArticle.content,
             date_published: newArticle.date_published,
-          })
-        })
+          });
+        });
     });
   });
 
+
+  context(`Given 'blogful_articles' has data`, () => {
+    beforeEach(() => {
+      return db
+        .into('blogful_articles')
+        .insert(testArticles)
+    });
+
+    it(`getAllArticles() resolves all articles from 'blogful_articles' table`, () => {
+      // test that ArticlesService.getAllArticles gets data from table
+      return ArticlesService.getAllArticles(db)
+        .then(actual => {
+          expect(actual).to.eql(testArticles)
+        });
+    });
+
+    it(`getById() resolves an article by id from 'blogful_articles' table`, () => {
+      const thirdId = 3;
+      const thirdTestArticle = testArticles[thirdId - 1];
+      return ArticlesService.getById(db, thirdId)
+        .then(actual => {
+          expect(actual).to.eql({
+            id: thirdId,
+            title: thirdTestArticle.title,
+            content: thirdTestArticle.content,
+            date_published: thirdTestArticle.date_published,
+          });
+        });
+    });
+
+  });
 });
