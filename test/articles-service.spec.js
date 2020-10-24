@@ -64,6 +64,7 @@ describe(`Articles service object`, () => {
           });
         });
     });
+
   });
 
 
@@ -75,7 +76,6 @@ describe(`Articles service object`, () => {
     });
 
     it(`getAllArticles() resolves all articles from 'blogful_articles' table`, () => {
-      // test that ArticlesService.getAllArticles gets data from table
       return ArticlesService.getAllArticles(db)
         .then(actual => {
           expect(actual).to.eql(testArticles)
@@ -101,12 +101,27 @@ describe(`Articles service object`, () => {
       return ArticlesService.deleteArticle(db, articleId)
         .then(() => ArticlesService.getAllArticles(db))
         .then(allArticles => {
-          // copy the test articles array without the "deleted" article
           const expected = testArticles.filter(article => article.id !== articleId)
           expect(allArticles).to.eql(expected)
         });
     });
 
+    it(`updateArticle() updates an article from the 'blogful_articles' table`, () => {
+      const idOfArticleToUpdate = 3;
+      const newArticleData = {
+        title: 'updated title',
+        content: 'updated content',
+        date_published: new Date(),
+      }
+      return ArticlesService.updateArticle(db, idOfArticleToUpdate, newArticleData)
+        .then(() => ArticlesService.getById(db, idOfArticleToUpdate))
+        .then(article => {
+          expect(article).to.eql({
+            id: idOfArticleToUpdate,
+            ...newArticleData,
+          });
+        });
+    });
 
   });
 });
