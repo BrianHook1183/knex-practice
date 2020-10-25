@@ -1,1 +1,0 @@
-//TODO methods for CRUD: to get, insert, update and delete shopping list items
