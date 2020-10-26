@@ -32,6 +32,7 @@ describe('ShoppingService Service Object', () => {
     },
   ];
 
+  // initially establish db connection
   before(() => {
     db = knex({
       client: 'pg',
@@ -39,24 +40,44 @@ describe('ShoppingService Service Object', () => {
     });
   });
 
+  // initially clear table
   before(() => db('shopping_list').truncate());
 
-  before(() => {
-    return db
-      .into('shopping_list')
-      .insert(testItems)
-  });
+  // clear table after each test
+  afterEach(() => db('shopping_list').truncate());
 
+
+
+  // end db connection
   after(() => db.destroy());
 
 
   describe('getAllItems() method', () => {
+    context('shopping_list HAS test data', () => {
 
-    it('resolves all items from "shopping_list" table', () => {
-      return ShoppingService.getAllItems(db)
-        .then(actual => {
-          expect(actual).to.eql(testItems)
-        });
+      // insert test data
+      before(() => {
+        return db
+          .into('shopping_list')
+          .insert(testItems)
+      });
+
+      it('resolves all items from "shopping_list" table', () => {
+        return ShoppingService.getAllItems(db)
+          .then(actual => {
+            expect(actual).to.eql(testItems)
+          });
+      });
     });
+
+    context('shopping_list is EMPTY', () => {
+      it('resolves an empty array', () => {
+        return ShoppingService.getAllItems(db)
+          .then(actual => {
+            expect(actual).to.eql([])
+          });
+      });
+    });
+
   });
 });
