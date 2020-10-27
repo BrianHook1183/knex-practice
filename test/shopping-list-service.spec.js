@@ -89,4 +89,32 @@ describe('ShoppingService Service Object', () => {
         });
     });
   });
+
+
+  describe('getById', () => {
+    context('shopping_list HAS data', () => {
+      // insert test data
+      before(() => {
+        return db
+          .into('shopping_list')
+          .insert(testItems)
+      });
+      it(`getById() resolves an item by id from 'shopping_list' table`, () => {
+        const thirdId = 3;
+        const thirdTestItem = testItems[thirdId - 1];
+        return ShoppingService.getById(db, thirdId)
+          .then(actual => {
+            expect(actual).to.eql({
+              id: thirdId,
+              name: thirdTestItem.name,
+              price: thirdTestItem.price,
+              date_added: thirdTestItem.date_added,
+              checked: thirdTestItem.checked,
+              category: thirdTestItem.category,
+            });
+          });
+      });
+    });
+  });
+
 });
