@@ -50,17 +50,15 @@ describe('ShoppingService Service Object', () => {
   after(() => db.destroy());
 
 
+  context('shopping_list HAS test data', () => {
+    // insert test data
+    beforeEach(() => {
+      return db
+        .into('shopping_list')
+        .insert(testItems)
+    });
 
-  describe('getAllItems() method', () => {
-    context('shopping_list HAS test data', () => {
-
-      // insert test data
-      before(() => {
-        return db
-          .into('shopping_list')
-          .insert(testItems)
-      });
-
+    describe('getAllItems() method', () => {
       it('resolves all items from "shopping_list" table', () => {
         return ShoppingService.getAllItems(db)
           .then(actual => {
@@ -69,37 +67,8 @@ describe('ShoppingService Service Object', () => {
       });
     });
 
-    context('shopping_list is EMPTY', () => {
-      it('resolves an empty array', () => {
-        return ShoppingService.getAllItems(db)
-          .then(actual => {
-            expect(actual).to.eql([])
-          });
-      });
-    });
-
-  });
-
-  describe('addItem() method', () => {
-    it('adds an item and resolves with an id', () => {
-      const newItem = testItems[0];
-      return ShoppingService.addItem(db, newItem)
-        .then(actual => {
-          expect(actual).to.eql(newItem)
-        });
-    });
-  });
-
-
-  describe('getById', () => {
-    context('shopping_list HAS data', () => {
-      // insert test data
-      before(() => {
-        return db
-          .into('shopping_list')
-          .insert(testItems)
-      });
-      it(`getById() resolves an item by id from 'shopping_list' table`, () => {
+    describe('getById() method', () => {
+      it(`resolves an item by id from 'shopping_list' table`, () => {
         const thirdId = 3;
         const thirdTestItem = testItems[thirdId - 1];
         return ShoppingService.getById(db, thirdId)
@@ -116,5 +85,30 @@ describe('ShoppingService Service Object', () => {
       });
     });
   });
+
+  context('shopping_list is EMPTY', () => {
+
+    describe('getAllItems() method', () => {
+      it('resolves an empty array', () => {
+        return ShoppingService.getAllItems(db)
+          .then(actual => {
+            expect(actual).to.eql([])
+          });
+      });
+    });
+
+    describe('addItem() method', () => {
+      it('adds an item and resolves with an id', () => {
+        const newItem = testItems[0];
+        return ShoppingService.addItem(db, newItem)
+          .then(actual => {
+            expect(actual).to.eql(newItem)
+          });
+      });
+    });
+
+  });
+
+
 
 });
