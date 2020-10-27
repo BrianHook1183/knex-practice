@@ -84,6 +84,19 @@ describe('ShoppingService Service Object', () => {
           });
       });
     });
+
+    describe('deleteItem() method', () => {
+      it('deletes an item by id', () => {
+        const itemId = 3;
+        return ShoppingService.deleteItem(db, itemId)
+          .then(() => ShoppingService.getAllItems(db))
+          .then(allItems => {
+            // copy the test item array without the "deleted" item
+            const expected = testItems.filter(item => item.id !== itemId);
+            expect(allItems).to.eql(expected)
+          });
+      });
+    });
   });
 
   context('shopping_list is EMPTY', () => {
