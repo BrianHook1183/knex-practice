@@ -1,1 +1,2 @@
-# Knex practice for Thinkful's web dev bootcamp
+# Knex / PostgreSQL
+practice for Thinkful's web dev bootcamp
