@@ -46,10 +46,9 @@ describe('ShoppingService Service Object', () => {
   // clear table after each test
   afterEach(() => db('shopping_list').truncate());
 
-
-
   // end db connection
   after(() => db.destroy());
+
 
 
   describe('getAllItems() method', () => {
@@ -79,5 +78,15 @@ describe('ShoppingService Service Object', () => {
       });
     });
 
+  });
+
+  describe('addItem() method', () => {
+    it('adds an item and resolves with an id', () => {
+      const newItem = testItems[0];
+      return ShoppingService.addItem(db, newItem)
+        .then(actual => {
+          expect(actual).to.eql(newItem)
+        });
+    });
   });
 });
