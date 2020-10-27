@@ -97,6 +97,29 @@ describe('ShoppingService Service Object', () => {
           });
       });
     });
+
+    describe('updateItem() method', () => {
+      it('updates an item by id with test data', () => {
+        const itemId = 3;
+        const newItemData = {
+          name: 'Updated Name',
+          price: '99.99',
+        };
+        const originalItem = testItems[itemId - 1];
+        return ShoppingService.updateItem(db, itemId, newItemData)
+          .then(() => ShoppingService.getById(db, itemId))
+          .then(item => {
+            expect(item).to.eql({
+              id: itemId,
+              ...originalItem,
+              ...newItemData,
+            });
+          });
+      });
+    });
+
+
+
   });
 
   context('shopping_list is EMPTY', () => {
