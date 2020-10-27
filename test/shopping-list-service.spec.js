@@ -117,9 +117,6 @@ describe('ShoppingService Service Object', () => {
           });
       });
     });
-
-
-
   });
 
   context('shopping_list is EMPTY', () => {
@@ -142,9 +139,6 @@ describe('ShoppingService Service Object', () => {
           });
       });
     });
-
   });
-
-
 
 });
